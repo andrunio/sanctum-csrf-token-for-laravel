@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    env:
+      IDENTIFIER: com.a_vasyukov.SanctumCsrfTokenForLaravel
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+
+      - name: Check syntax
+        run: node --check SanctumCsrfTokenForLaravel.js
+
+      - name: Run tests
+        run: node --test
+
+      - name: Package the extension
+        run: |
+          mkdir -p "dist/$IDENTIFIER"
+          cp SanctumCsrfTokenForLaravel.js README.md LICENSE "dist/$IDENTIFIER/"
+          cd dist && zip -r "../$IDENTIFIER.zip" "$IDENTIFIER"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" "$IDENTIFIER.zip" --title "$GITHUB_REF_NAME" --generate-notes
