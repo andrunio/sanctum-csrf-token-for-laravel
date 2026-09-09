@@ -1,7 +1,7 @@
 # Sanctum CSRF Token for Laravel
 
-[![CI](https://github.com/a-vasyukov/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml/badge.svg)](https://github.com/a-vasyukov/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/a-vasyukov/sanctum-csrf-token-for-laravel)](https://github.com/a-vasyukov/sanctum-csrf-token-for-laravel/releases/latest)
+[![CI](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml/badge.svg)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/andrunio/sanctum-csrf-token-for-laravel)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/releases/latest)
 
 A Dynamic Value extension for [RapidAPI for Mac](https://paw.cloud) (formerly Paw) that reads the
 `XSRF-TOKEN` cookie of the current request, URL-decodes it and returns the raw token — ready to be
@@ -27,8 +27,8 @@ RapidAPI for Mac 4.x (or any Paw 3.x build) on macOS.
 
 ## Installation
 
-1. Download `com.a_vasyukov.SanctumCsrfTokenForLaravel.zip` from the
-   [latest release](https://github.com/a-vasyukov/sanctum-csrf-token-for-laravel/releases/latest).
+1. Download `com.andrunio.SanctumCsrfTokenForLaravel.zip` from the
+   [latest release](https://github.com/andrunio/sanctum-csrf-token-for-laravel/releases/latest).
 2. Open **Preferences ‣ Extensions ‣ Open Extensions Directory**.
 3. Unzip the archive there and restart the app.
 
@@ -37,7 +37,7 @@ holding a `.js` file named after the identifier's last component:
 
 ```
 Extensions/
-  com.a_vasyukov.SanctumCsrfTokenForLaravel/
+  com.andrunio.SanctumCsrfTokenForLaravel/
     SanctumCsrfTokenForLaravel.js
 ```
 

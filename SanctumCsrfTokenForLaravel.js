@@ -35,8 +35,8 @@ const SanctumCsrfTokenForLaravel = function () {
     };
 };
 
-SanctumCsrfTokenForLaravel.identifier = 'com.a_vasyukov.SanctumCsrfTokenForLaravel';
+SanctumCsrfTokenForLaravel.identifier = 'com.andrunio.SanctumCsrfTokenForLaravel';
 SanctumCsrfTokenForLaravel.title = 'Sanctum CSRF Token for Laravel';
-SanctumCsrfTokenForLaravel.help = 'https://github.com/a-vasyukov/sanctum-csrf-token-for-laravel#readme';
+SanctumCsrfTokenForLaravel.help = 'https://github.com/andrunio/sanctum-csrf-token-for-laravel#readme';
 
 registerDynamicValueClass(SanctumCsrfTokenForLaravel);

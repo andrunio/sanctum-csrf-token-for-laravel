@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      IDENTIFIER: com.a_vasyukov.SanctumCsrfTokenForLaravel
+      IDENTIFIER: com.andrunio.SanctumCsrfTokenForLaravel
 
     steps:
       - uses: actions/checkout@v7

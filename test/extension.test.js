@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.join(__dirname, '..');
-const IDENTIFIER = 'com.a_vasyukov.SanctumCsrfTokenForLaravel';
+const IDENTIFIER = 'com.andrunio.SanctumCsrfTokenForLaravel';
 const FILE_NAME = `${IDENTIFIER.split('.').pop()}.js`;
 
 const source = fs.readFileSync(path.join(ROOT, FILE_NAME), 'utf8');
