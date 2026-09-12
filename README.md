@@ -3,23 +3,20 @@
 [![CI](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml/badge.svg)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/andrunio/sanctum-csrf-token-for-laravel)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/releases/latest)
 
-A Dynamic Value extension for [RapidAPI for Mac](https://paw.cloud) (formerly Paw) that reads the
-`XSRF-TOKEN` cookie of the current request, URL-decodes it and returns the raw token — ready to be
-dropped into the `X-XSRF-TOKEN` header.
+A Dynamic Value extension for [RapidAPI for Mac](https://paw.cloud) (formerly Paw). It reads the
+`XSRF-TOKEN` cookie, URL-decodes it and returns the token for the `X-XSRF-TOKEN` header.
 
 ## Why
 
 Laravel Sanctum's SPA authentication is cookie-based and CSRF-protected:
 
-1. The client calls `GET /sanctum/csrf-cookie`. Sanctum responds with an `XSRF-TOKEN` cookie whose
+1. The client calls `GET /sanctum/csrf-cookie`. Sanctum answers with an `XSRF-TOKEN` cookie whose
    value is **URL-encoded**.
-2. Every subsequent state-changing request must send that value back, **decoded**, in the
-   `X-XSRF-TOKEN` header. Laravel compares it against the session token and answers
-   `419 CSRF token mismatch` when it does not match.
+2. Every state-changing request must send that value back, **decoded**, in the `X-XSRF-TOKEN` header.
+   Laravel answers `419 CSRF token mismatch` when it does not match the session token.
 
-In a browser an HTTP library such as Axios does step 2 automatically. In an API client you have to do
-it by hand, and the token changes on every session refresh. This extension resolves the header value
-at request time, so the token is never copy-pasted.
+A browser library such as Axios does step 2 on its own. In an API client the header is filled by hand,
+and the token changes with every session. This extension fills it at request time.
 
 ## Requirements
 
@@ -45,18 +42,27 @@ From a clone, create that folder by hand and copy `SanctumCsrfTokenForLaravel.js
 
 ## Usage
 
-1. Create a request for `GET /sanctum/csrf-cookie` and send it once. The app stores the returned
-   cookies and replays them on later requests to the same domain.
+1. Create a request for `GET /sanctum/csrf-cookie` and send it once. The app keeps the cookies it
+   returns and replays them on later requests to the same domain.
 2. In the request that needs CSRF protection, add a header named `X-XSRF-TOKEN`.
-3. Right-click the header's value field, choose **Extensions ‣ Sanctum CSRF Token for Laravel**.
-4. Send the request. The extension reads the `Cookie` header the app is about to send, extracts
-   `XSRF-TOKEN` and returns the decoded token.
+3. Right-click the header's value field and choose **Extensions ‣ Sanctum CSRF Token for Laravel**.
 
-The header is read from the *current* request, so no source request has to be selected and nothing
-breaks when the session is refreshed.
+The token is resolved every time the request is sent, so a refreshed session needs no edits.
 
-Returns an empty string when the request carries no `XSRF-TOKEN` cookie — a `419` response then means
-step 1 has not been done for this domain.
+## Where the token comes from
+
+The dynamic value has one field, **Source request** — a picker listing the project's requests.
+
+**Current Request**, the default, parses the `Cookie` header this request is about to send.
+
+**Any other request** parses the `Set-Cookie` header of that request's last response. Point it at the
+request from step 1; the value stays empty until that request has been sent.
+
+Pick a source request when the request writes its own `Cookie` header — an `XDEBUG_SESSION` cookie,
+for instance. An explicit `Cookie` replaces the cookies the app would send from its own store,
+`XSRF-TOKEN` is not among them, and **Current Request** has nothing left to read.
+
+An empty value means no `XSRF-TOKEN` was found, and Laravel rejects the request with `419`.
 
 ## Laravel side
 
@@ -66,16 +72,16 @@ The token is only issued and accepted when the API treats the client as stateful
 - `supports_credentials` is `true` in `config/cors.php`;
 - SPA and API share a common top-level domain, so the cookie is sent along.
 
-## Doing the same without this extension
+## Without this extension
 
-The same value can be assembled from a chain of three dynamic values, the officially documented route
-for pulling a CSRF token out of a response (RegExp Match is an official extension, not a built-in):
+The same value can be assembled from three dynamic values, the officially documented route for pulling
+a CSRF token out of a response (RegExp Match is an official extension, not a built-in):
 
 **Response Header** (`Set-Cookie` of the `/sanctum/csrf-cookie` request) → **RegExp Match**
 (`XSRF-TOKEN=([^;]+)`, capture group 1) → **URL Encoding** in *Decode* mode.
 
-It works, but it has to be pointed at a specific source request and rebuilt in every header field.
-This extension collapses the chain into a single token.
+That chain has to be rebuilt in every header field and always points at a source request. This
+extension is a single value, and by default reads the request it sits in.
 
 ## Development
 
@@ -86,9 +92,9 @@ node --check SanctumCsrfTokenForLaravel.js
 node --test
 ```
 
-They cover cookie parsing, the static fields the host requires and the agreement between this README
-and the code. CI runs them on every push; pushing a `v*` tag packages the extension folder and publishes
-it as a release.
+They cover both sources of the token, the input the extension declares and the static fields the host
+requires. CI runs them on every push; pushing a `v*` tag packages the extension folder and publishes it
+as a release.
 
 ## License
 
