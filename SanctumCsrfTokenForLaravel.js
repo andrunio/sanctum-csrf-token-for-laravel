@@ -20,10 +20,26 @@ const SanctumCsrfTokenForLaravel = function () {
         return '';
     };
 
-    this.evaluate = function (context) {
-        const request = context.getCurrentRequest();
+    // Set-Cookie appends attributes after ';' and stacks several cookies behind ','.
+    const readSetCookie = function (header, name) {
+        const match = header.match(new RegExp('(?:^|[;,\\s])' + name + '=([^;,]*)'));
 
-        return readCookie(request.getHeaderByName('Cookie') || '', cookieName);
+        return match ? decodeURIComponent(match[1].trim()) : '';
+    };
+
+    this.evaluate = function (context) {
+        const currentRequest = context.getCurrentRequest();
+        const sourceRequest = this.sourceRequest;
+
+        // The picker defaults to Current Request, and the host hands back that very object.
+        if (sourceRequest && sourceRequest.id !== currentRequest.id) {
+            const exchange = sourceRequest.getLastExchange();
+            const setCookie = exchange && exchange.getResponseHeaderByName('Set-Cookie');
+
+            return readSetCookie(String(setCookie || ''), cookieName);
+        }
+
+        return readCookie(currentRequest.getHeaderByName('Cookie') || '', cookieName);
     };
 
     this.title = function (context) {
@@ -38,5 +54,9 @@ const SanctumCsrfTokenForLaravel = function () {
 SanctumCsrfTokenForLaravel.identifier = 'com.andrunio.SanctumCsrfTokenForLaravel';
 SanctumCsrfTokenForLaravel.title = 'Sanctum CSRF Token for Laravel';
 SanctumCsrfTokenForLaravel.help = 'https://github.com/andrunio/sanctum-csrf-token-for-laravel#readme';
+
+SanctumCsrfTokenForLaravel.inputs = [
+    DynamicValueInput('sourceRequest', 'Source request', 'Request')
+];
 
 registerDynamicValueClass(SanctumCsrfTokenForLaravel);
