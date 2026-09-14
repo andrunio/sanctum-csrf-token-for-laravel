@@ -25,7 +25,12 @@ jobs:
         run: node --check SanctumCsrfTokenForLaravel.js
 
       - name: Run tests
-        run: node --test
+        run: >
+          node --test
+          --experimental-test-coverage
+          --test-coverage-lines=100
+          --test-coverage-branches=100
+          --test-coverage-functions=100
 
       - name: Package the extension
         run: |

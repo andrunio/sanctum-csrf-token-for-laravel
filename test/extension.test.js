@@ -4,6 +4,7 @@ const {describe, test} = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..');
 const IDENTIFIER = 'com.andrunio.SanctumCsrfTokenForLaravel';
@@ -11,18 +12,19 @@ const FILE_NAME = `${IDENTIFIER.split('.').pop()}.js`;
 
 const source = fs.readFileSync(path.join(ROOT, FILE_NAME), 'utf8');
 
-// Loads the shipped script the way the host does, with the two globals it injects.
+// Runs the shipped script the way the host does; the filename makes coverage see the file.
 const loadDynamicValueClass = function () {
     let registered = null;
 
-    new Function('registerDynamicValueClass', 'DynamicValueInput', source)(
-        function (klass) {
-            registered = klass;
-        },
-        function (key, name, type, options) {
-            return {key, name, type, options: options || {}};
-        },
-    );
+    globalThis.registerDynamicValueClass = function (klass) {
+        registered = klass;
+    };
+
+    globalThis.DynamicValueInput = function (key, name, type, options) {
+        return {key, name, type, options: options || {}};
+    };
+
+    vm.runInThisContext(source, {filename: path.join(ROOT, FILE_NAME)});
 
     return registered;
 };

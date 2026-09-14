@@ -1,6 +1,7 @@
 # Sanctum CSRF Token for Laravel
 
 [![CI](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml/badge.svg)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/andrunio/sanctum-csrf-token-for-laravel/graph/badge.svg)](https://codecov.io/gh/andrunio/sanctum-csrf-token-for-laravel)
 [![Latest release](https://img.shields.io/github/v/release/andrunio/sanctum-csrf-token-for-laravel)](https://github.com/andrunio/sanctum-csrf-token-for-laravel/releases/latest)
 
 A Dynamic Value extension for [RapidAPI for Mac](https://paw.cloud) (formerly Paw). It reads the
@@ -90,11 +91,13 @@ The `.js` file is the shipped artifact and is loaded verbatim, so there is no bu
 ```
 node --check SanctumCsrfTokenForLaravel.js
 node --test
+node --test --experimental-test-coverage
 ```
 
 They cover both sources of the token, the input the extension declares and the static fields the host
-requires. CI runs them on every push; pushing a `v*` tag packages the extension folder and publishes it
-as a release.
+requires. CI runs them on every push and fails when coverage of the shipped file falls below 100% of
+lines, branches and functions; pushing a `v*` tag packages the extension folder and publishes it as a
+release.
 
 ## License
 

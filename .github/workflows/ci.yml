@@ -9,6 +9,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     steps:
       - uses: actions/checkout@v7
 
@@ -20,4 +23,21 @@ jobs:
         run: node --check SanctumCsrfTokenForLaravel.js
 
       - name: Run tests
-        run: node --test
+        run: >
+          node --test
+          --experimental-test-coverage
+          --test-coverage-lines=100
+          --test-coverage-branches=100
+          --test-coverage-functions=100
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=lcov --test-reporter-destination=lcov.info
+
+      - name: Check the shipped file reached the coverage report
+        run: grep -q '^SF:SanctumCsrfTokenForLaravel.js$' lcov.info
+
+      - name: Upload coverage to Codecov
+        if: env.CODECOV_TOKEN != ''
+        uses: codecov/codecov-action@v7
+        with:
+          files: lcov.info
+          fail_ci_if_error: true
