@@ -7,6 +7,8 @@
 A Dynamic Value extension for [RapidAPI for Mac](https://paw.cloud) (formerly Paw). It reads the
 `XSRF-TOKEN` cookie, URL-decodes it and returns the token for the `X-XSRF-TOKEN` header.
 
+![The X-XSRF-TOKEN header of a request in RapidAPI, filled by the dynamic value: Source request points at the CSRF request, and the request preview below carries the decoded token](docs/screenshot.webp)
+
 ## Why
 
 Laravel Sanctum's SPA authentication is cookie-based and CSRF-protected:
