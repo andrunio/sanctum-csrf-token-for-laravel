@@ -35,7 +35,7 @@ jobs:
       - name: Package the extension
         run: |
           mkdir -p "dist/$IDENTIFIER"
-          cp SanctumCsrfTokenForLaravel.js README.md LICENSE "dist/$IDENTIFIER/"
+          cp SanctumCsrfTokenForLaravel.js LICENSE "dist/$IDENTIFIER/"
           cd dist && zip -r "../$IDENTIFIER.zip" "$IDENTIFIER"
 
       - name: Publish the release
